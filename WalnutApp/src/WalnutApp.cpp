@@ -6,7 +6,7 @@
 #include "Renderer/Renderer.h"
 
 #include "Renderer/Camera.h"
-#include "Renderer/Sphere.h"
+#include "Renderer/Scene.h"
 
 #include "Walnut/Timer.h"
 
@@ -19,8 +19,8 @@ public:
 	{
 		Sphere sphere_1({ 1.0f, 0.0f, 1.0f }, 0.5f,{ -0.5f, 0.0f, 0.0f });
 		Sphere sphere_2({ 0.0f, 0.0f, 1.0f }, 0.5f,{ 0.0f, 0.0f, 0.0f });
-		m_Spheres.emplace_back(sphere_1);
-		m_Spheres.emplace_back(sphere_2);
+		m_Scene.Spheres.emplace_back(sphere_1);
+		m_Scene.Spheres.emplace_back(sphere_2);
 
 	}
 
@@ -44,13 +44,13 @@ public:
 
 		ImGui::Begin("Controls");
 
-		for (uint32_t i = 0; i < m_Spheres.size(); i++)
+		for (uint32_t i = 0; i < m_Scene.Spheres.size(); i++)
 		{
 			ImGui::PushID(i);
 
-			ImGui::DragFloat3("Position", glm::value_ptr(m_Spheres[i].Center), 0.1f);
-			ImGui::DragFloat("Raduis", &(m_Spheres[i].Raduis), 0.1f);
-			ImGui::ColorEdit3("Color", glm::value_ptr(m_Spheres[i].Color));
+			ImGui::DragFloat3("Position", glm::value_ptr(m_Scene.Spheres[i].Center), 0.1f);
+			ImGui::DragFloat("Raduis", &(m_Scene.Spheres[i].Raduis), 0.1f);
+			ImGui::ColorEdit3("Color", glm::value_ptr(m_Scene.Spheres[i].Color));
 
 			ImGui::Separator();
 
@@ -87,7 +87,7 @@ public:
 
 		m_Renderer.OnResize(m_ViewportWidth, m_ViewportHeight);
 		m_Camera.OnResize(m_ViewportWidth, m_ViewportHeight);
-		m_Renderer.Render(m_Spheres, m_Camera);
+		m_Renderer.Render(m_Scene, m_Camera);
 
 		m_RenderTime = timer.ElapsedMillis();
 	}
@@ -96,7 +96,7 @@ public:
 private :
 	Renderer m_Renderer;
 	Camera m_Camera;
-	std::vector<Sphere> m_Spheres;
+	Scene m_Scene;
 
 	uint32_t m_ViewportWidth = 0;
 	uint32_t m_ViewportHeight = 0;
