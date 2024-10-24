@@ -22,6 +22,8 @@ public:
 			mat.Color = { 1.0f, 0.0f, 1.0f };
 			mat.Roughness = 0.0f;
 			mat.Metallic = 0.0f;
+			mat.EmissionColor = { 0.0f, 0.0f, 0.0f };
+			mat.EmissionPower = 0.0f;
 
 
 			Sphere pinkSphere;
@@ -37,12 +39,30 @@ public:
 			mat.Color = { 0.0f, 0.0f, 1.0f };
 			mat.Roughness = 0.0f;
 			mat.Metallic = 0.0f;
+			mat.EmissionColor = { 0.0f, 0.0f, 0.0f };
+			mat.EmissionPower = 0.1f;
 
 			Sphere blueSphere;
 			blueSphere.Center = { 0.0f, -101.0f, 0.0f };
 			blueSphere.Raduis = 100.00f;
 			blueSphere.MaterialIndex = 1;
 			m_Scene.Spheres.emplace_back(blueSphere);
+			m_Scene.Mat.emplace_back(mat);
+
+		}
+		{
+			Material mat;
+			mat.Color = { 0.0f, 0.0f, 1.0f };
+			mat.Roughness = 0.0f;
+			mat.Metallic = 0.0f;
+			mat.EmissionColor = { 0.9f, 0.0f, 1.0f };
+			mat.EmissionPower = 0.1f;
+
+			Sphere orangeSphere;
+			orangeSphere.Center = { 2.0f, 0.0f, 0.0f };
+			orangeSphere.Raduis = 1.0f;
+			orangeSphere.MaterialIndex = 2;
+			m_Scene.Spheres.emplace_back(orangeSphere);
 			m_Scene.Mat.emplace_back(mat);
 
 		}
@@ -92,6 +112,8 @@ public:
 			ImGui::ColorEdit3("Color", glm::value_ptr(m_Scene.Mat[i].Color));
 			ImGui::DragFloat("Roughness", &(m_Scene.Mat[i].Roughness), 0.05f, 0.0f, 1.0f);
 			ImGui::DragFloat("Metallic", &(m_Scene.Mat[i].Metallic), 0.05f, 0.0f, 1.0f);
+			ImGui::ColorEdit3("EmissionColor", glm::value_ptr(m_Scene.Mat[i].EmissionColor));
+			ImGui::DragFloat("EmissionPower", &(m_Scene.Mat[i].EmissionPower), 0.05f, 0.0f, FLT_MAX);
 
 			ImGui::Separator();
 

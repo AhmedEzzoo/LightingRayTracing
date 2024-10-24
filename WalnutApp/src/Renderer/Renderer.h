@@ -69,4 +69,8 @@ private :
 	glm::vec4* m_AccumulatedData = nullptr;
 
 	uint32_t m_FrameIndex = 1;
+
+	std::vector<uint32_t> m_WindowWidthIteratoer;
+	std::vector<uint32_t> m_WindowHeightIteratoer;
+
 };

@@ -1,7 +1,7 @@
 #include "Renderer.h"
 #include "Walnut/Random.h"
 
-
+#include <execution>
 Renderer::~Renderer()
 {
 
@@ -41,6 +41,15 @@ void Renderer::OnResize(uint32_t width, uint32_t height)
 	
 	delete[]m_AccumulatedData;
 	m_AccumulatedData = new glm::vec4[width * height];
+
+	m_WindowWidthIteratoer.resize(width);
+	m_WindowHeightIteratoer.resize(height);
+
+	for (uint32_t i = 0; i < width; i++)
+		m_WindowWidthIteratoer[i] = i;
+
+	for (uint32_t i = 0; i < height; i++)
+		m_WindowHeightIteratoer[i] = i;
 }
 
 
@@ -53,11 +62,37 @@ void Renderer::Render(const Scene& scene, const Camera& camera)
 	if (m_FrameIndex == 1)
 		memset(m_AccumulatedData, 0, m_FinalImage->GetHeight() * m_FinalImage->GetWidth() * sizeof(glm::vec4));
 
+
+#define MT 1
+#if MT
+	
+	std::for_each(std::execution::par, m_WindowHeightIteratoer.begin(), m_WindowHeightIteratoer.end(),
+
+		[this](uint32_t y) {
+				
+			std::for_each(std::execution::par, m_WindowWidthIteratoer.begin(), m_WindowWidthIteratoer.end(),
+				[this, y](uint32_t x) {
+
+					glm::vec4 color = PerPixel(x, y);
+					m_AccumulatedData[x + y * m_FinalImage->GetWidth()] += color;
+
+					glm::vec4 accColor = m_AccumulatedData[x + y * m_FinalImage->GetWidth()];
+					accColor /= (float)m_FrameIndex;
+
+					accColor = glm::clamp(accColor, glm::vec4(0.0f), glm::vec4(1.0f));
+					m_ImageData[x + y * m_FinalImage->GetWidth()] = CovertToRGBA(accColor);
+				});
+
+		});
+
+
+	
+#else 
 	for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++)
 	{
 		for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++)
 		{
-		
+
 			glm::vec4 color = PerPixel(x, y);
 			m_AccumulatedData[x + y * m_FinalImage->GetWidth()] += color;
 
@@ -71,6 +106,7 @@ void Renderer::Render(const Scene& scene, const Camera& camera)
 
 	}
 
+#endif
 	if (m_Settings.Accumulate)
 		m_FrameIndex++;
 
