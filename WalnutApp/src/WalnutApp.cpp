@@ -17,16 +17,43 @@ class ExampleLayer : public Walnut::Layer
 public:
 	ExampleLayer() : m_Camera(45.0f, 0.1f, 100.0f)
 	{
-		Sphere sphere_1({ 1.0f, 0.0f, 1.0f }, 0.5f,{ -0.5f, 0.0f, 0.0f });
-		Sphere sphere_2({ 0.0f, 0.0f, 1.0f }, 0.5f,{ 0.0f, 0.0f, 0.0f });
-		m_Scene.Spheres.emplace_back(sphere_1);
-		m_Scene.Spheres.emplace_back(sphere_2);
+		{
+			Material mat;
+			mat.Color = { 1.0f, 0.0f, 1.0f };
+			mat.Roughness = 0.0f;
+			mat.Metallic = 0.0f;
+
+
+			Sphere pinkSphere;
+			pinkSphere.Center = { 0.0f, 0.0f, 0.0f };
+			pinkSphere.Raduis = 1.0f;
+			pinkSphere.MaterialIndex = 0;
+			m_Scene.Spheres.emplace_back(pinkSphere);
+			m_Scene.Mat.emplace_back(mat);
+		}
+
+		{
+			Material mat;
+			mat.Color = { 0.0f, 0.0f, 1.0f };
+			mat.Roughness = 0.0f;
+			mat.Metallic = 0.0f;
+
+			Sphere blueSphere;
+			blueSphere.Center = { 0.0f, -101.0f, 0.0f };
+			blueSphere.Raduis = 100.00f;
+			blueSphere.MaterialIndex = 1;
+			m_Scene.Spheres.emplace_back(blueSphere);
+			m_Scene.Mat.emplace_back(mat);
+
+		}
+		
 
 	}
 
 	virtual void OnUpdate(float ts) override 
 	{
-		m_Camera.OnUpdate(ts);
+		if (m_Camera.OnUpdate(ts))
+			m_Renderer.ResetFrameIndex();
 	}
 
 	virtual void OnUIRender() override
@@ -50,13 +77,35 @@ public:
 
 			ImGui::DragFloat3("Position", glm::value_ptr(m_Scene.Spheres[i].Center), 0.1f);
 			ImGui::DragFloat("Raduis", &(m_Scene.Spheres[i].Raduis), 0.1f);
-			ImGui::ColorEdit3("Color", glm::value_ptr(m_Scene.Spheres[i].Color));
+			ImGui::DragInt("Index", &(m_Scene.Spheres[i].MaterialIndex), 1, 0, (int)m_Scene.Mat.size() - 1);
 
 			ImGui::Separator();
 
 			ImGui::PopID();
 
 		}
+
+		for (uint32_t i = 0; i < m_Scene.Mat.size(); i++)
+		{
+			ImGui::PushID(i);
+
+			ImGui::ColorEdit3("Color", glm::value_ptr(m_Scene.Mat[i].Color));
+			ImGui::DragFloat("Roughness", &(m_Scene.Mat[i].Roughness), 0.05f, 0.0f, 1.0f);
+			ImGui::DragFloat("Metallic", &(m_Scene.Mat[i].Metallic), 0.05f, 0.0f, 1.0f);
+
+			ImGui::Separator();
+
+			ImGui::PopID();
+
+		}
+
+		ImGui::Checkbox("Accumulate", &(m_Renderer.GetSettings().Accumulate));
+
+		if (ImGui::Button("ResetFrameIndex"))
+		{
+			m_Renderer.ResetFrameIndex();
+		}
+		
 
 
 		ImGui::End();

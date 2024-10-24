@@ -21,7 +21,15 @@ public :
 
 	void Render(const Scene& scene, const Camera& camera);
 
+	void ResetFrameIndex() { m_FrameIndex = 1; }
 
+
+	struct Settings
+	{
+		bool Accumulate = true;
+	};
+
+	Settings& GetSettings() { return m_Settings; }
 
 private :
 
@@ -50,10 +58,15 @@ private :
 	const Scene* m_ActiveScene = nullptr;
 	const Camera* m_Camera = nullptr;
 
-	uint32_t* m_ImageData = nullptr;
 	std::shared_ptr<Walnut::Image> m_FinalImage;
 
 	uint32_t m_Width = 0;
 	uint32_t m_Height = 0;
 
+	Settings m_Settings;
+
+	uint32_t* m_ImageData = nullptr;
+	glm::vec4* m_AccumulatedData = nullptr;
+
+	uint32_t m_FrameIndex = 1;
 };

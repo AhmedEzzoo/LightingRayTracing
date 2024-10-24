@@ -38,6 +38,9 @@ void Renderer::OnResize(uint32_t width, uint32_t height)
 
 	delete[]m_ImageData;
 	m_ImageData = new uint32_t[width * height];
+	
+	delete[]m_AccumulatedData;
+	m_AccumulatedData = new glm::vec4[width * height];
 }
 
 
@@ -47,18 +50,32 @@ void Renderer::Render(const Scene& scene, const Camera& camera)
 	m_ActiveScene = &scene;
 	m_Camera = &camera;
 
+	if (m_FrameIndex == 1)
+		memset(m_AccumulatedData, 0, m_FinalImage->GetHeight() * m_FinalImage->GetWidth() * sizeof(glm::vec4));
+
 	for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++)
 	{
 		for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++)
 		{
 		
 			glm::vec4 color = PerPixel(x, y);
-			color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
-			m_ImageData[x + y * m_FinalImage->GetWidth()] = CovertToRGBA(color);
+			m_AccumulatedData[x + y * m_FinalImage->GetWidth()] += color;
+
+			glm::vec4 accColor = m_AccumulatedData[x + y * m_FinalImage->GetWidth()];
+			accColor /= (float)m_FrameIndex;
+
+			accColor = glm::clamp(accColor, glm::vec4(0.0f), glm::vec4(1.0f));
+			m_ImageData[x + y * m_FinalImage->GetWidth()] = CovertToRGBA(accColor);
 
 		}
 
 	}
+
+	if (m_Settings.Accumulate)
+		m_FrameIndex++;
+
+	else
+		m_FrameIndex = 1;
 
 
 	m_FinalImage->SetData(m_ImageData);
@@ -87,13 +104,13 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 	float multiplyer = 1.0f;
 
 
-	uint8_t bounce = 2;
+	uint8_t bounce = 5;
 	for (uint8_t i = 0; i < bounce; i++)
 	{
 		HitPayload payload = TraceRay(ray);
 		if (payload.HItDistance < 0.0f)
 		{
-			glm::vec3 skyColor  =  glm::vec3(0.0f, 0.0f, 0.0f);
+			glm::vec3 skyColor  =  glm::vec3(0.6f, 0.7f, 0.8f);
 			color += skyColor * multiplyer;
 			break;
 		}
@@ -103,15 +120,16 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 
 
 		const Sphere& sphere = m_ActiveScene->Spheres[payload.ObjectIndex];
+		const Material& material = m_ActiveScene->Mat[payload.ObjectIndex];
 
-		glm::vec3 sphereColor = sphere.Color;
+		glm::vec3 sphereColor = material.Color;
 		sphereColor *= lightIntenisty;
 
 		color += sphereColor * multiplyer;
 		
 		multiplyer *= 0.7f;
 		ray.RayOrigin = payload.WorldPosition + payload.WorldNormal * 0.0001f;
-		ray.RayDirection = glm::reflect(ray.RayDirection, payload.WorldNormal);
+		ray.RayDirection = glm::reflect(ray.RayDirection, payload.WorldNormal + (material.Roughness * Walnut::Random::Vec3(-0.5f, 0.5f)));
 	}
 
 	

@@ -2,23 +2,30 @@
 
 #include "glm/glm.hpp"
 
+
+
+struct Material
+{
+	glm::vec3 Color{ 1.0f, 0.0f, 1.0f };
+	float Roughness = 0.1f;
+	float Metallic = 0.0f;
+};
+
+
+
 struct Sphere
 {
 
 	glm::vec3 Center{0.0f, 0.0f, 0.0f};
 	float Raduis = 0.5f;
-	glm::vec3 Color{1.0f, 0.0f, 1.0f};
-
-	Sphere(const glm::vec3& color, float raduis, const glm::vec3& center)
-		: Color(color), Raduis(raduis), Center(center)
-	{}
 	
+
+	int MaterialIndex = 0;
 };
 
 
 struct Scene
 {
-
 	std::vector<Sphere> Spheres;
-
+	std::vector<Material> Mat;
 };
