@@ -12,6 +12,9 @@ struct Material
 
 	glm::vec3 EmissionColor{ 0.0f, 0.0f, 0.0f };
 	float EmissionPower = 0.0f;
+
+
+	glm::vec3 GetEmission() const { return EmissionColor * EmissionPower; }
 };
 
 

@@ -17,54 +17,54 @@ class ExampleLayer : public Walnut::Layer
 public:
 	ExampleLayer() : m_Camera(45.0f, 0.1f, 100.0f)
 	{
+
+		Material pinkSphere;
+		pinkSphere.Color = { 1.0f, 0.0f, 1.0f };
+		pinkSphere.Roughness = 0.0f;
+		pinkSphere.Metallic = 0.0f;
+		pinkSphere.EmissionColor = { 0.0f, 0.0f, 0.0f };
+		pinkSphere.EmissionPower = 0.0f;
+
+		Material blueSphere;
+		blueSphere.Color = { 0.0f, 0.0f, 1.0f };
+		blueSphere.Roughness = 0.0f;
+		blueSphere.Metallic = 0.0f;
+		blueSphere.EmissionColor = { 0.0f, 0.0f, 0.0f };
+		blueSphere.EmissionPower = 0.0f;
+
+		Material orangeSphere;
+		orangeSphere.Color = { 0.8f, 0.5f, 0.2f };
+		orangeSphere.Roughness = 0.0f;
+		orangeSphere.Metallic = 0.0f;
+		orangeSphere.EmissionColor = { 0.8f, 0.5f, 0.2f };
+		orangeSphere.EmissionPower = 2.0f;
+
+
 		{
-			Material mat;
-			mat.Color = { 1.0f, 0.0f, 1.0f };
-			mat.Roughness = 0.0f;
-			mat.Metallic = 0.0f;
-			mat.EmissionColor = { 0.0f, 0.0f, 0.0f };
-			mat.EmissionPower = 0.0f;
-
-
-			Sphere pinkSphere;
-			pinkSphere.Center = { 0.0f, 0.0f, 0.0f };
-			pinkSphere.Raduis = 1.0f;
-			pinkSphere.MaterialIndex = 0;
-			m_Scene.Spheres.emplace_back(pinkSphere);
-			m_Scene.Mat.emplace_back(mat);
+			Sphere sphere;
+			sphere.Center = { 0.0f, 0.0f, 0.0f };
+			sphere.Raduis = 1.0f;
+			sphere.MaterialIndex = 0;
+			m_Scene.Spheres.emplace_back(sphere);
+			m_Scene.Mat.emplace_back(pinkSphere);
 		}
 
 		{
-			Material mat;
-			mat.Color = { 0.0f, 0.0f, 1.0f };
-			mat.Roughness = 0.0f;
-			mat.Metallic = 0.0f;
-			mat.EmissionColor = { 0.0f, 0.0f, 0.0f };
-			mat.EmissionPower = 0.1f;
-
-			Sphere blueSphere;
-			blueSphere.Center = { 0.0f, -101.0f, 0.0f };
-			blueSphere.Raduis = 100.00f;
-			blueSphere.MaterialIndex = 1;
-			m_Scene.Spheres.emplace_back(blueSphere);
-			m_Scene.Mat.emplace_back(mat);
-
+			Sphere sphere;
+			sphere.Center = { 0.0f, -101.0f, 0.0f };
+			sphere.Raduis = 100.00f;
+			sphere.MaterialIndex = 1;
+			m_Scene.Spheres.emplace_back(sphere);
+			m_Scene.Mat.emplace_back(blueSphere);
 		}
+
 		{
-			Material mat;
-			mat.Color = { 0.0f, 0.0f, 1.0f };
-			mat.Roughness = 0.0f;
-			mat.Metallic = 0.0f;
-			mat.EmissionColor = { 0.9f, 0.0f, 1.0f };
-			mat.EmissionPower = 0.1f;
-
-			Sphere orangeSphere;
-			orangeSphere.Center = { 2.0f, 0.0f, 0.0f };
-			orangeSphere.Raduis = 1.0f;
-			orangeSphere.MaterialIndex = 2;
-			m_Scene.Spheres.emplace_back(orangeSphere);
-			m_Scene.Mat.emplace_back(mat);
-
+			Sphere sphere;
+			sphere.Center = { 2.0f, 0.0f, 0.0f };
+			sphere.Raduis = 1.0f;
+			sphere.MaterialIndex = 2;
+			m_Scene.Spheres.emplace_back(sphere);
+			m_Scene.Mat.emplace_back(orangeSphere);
 		}
 		
 
@@ -112,8 +112,8 @@ public:
 			ImGui::ColorEdit3("Color", glm::value_ptr(m_Scene.Mat[i].Color));
 			ImGui::DragFloat("Roughness", &(m_Scene.Mat[i].Roughness), 0.05f, 0.0f, 1.0f);
 			ImGui::DragFloat("Metallic", &(m_Scene.Mat[i].Metallic), 0.05f, 0.0f, 1.0f);
-			ImGui::ColorEdit3("EmissionColor", glm::value_ptr(m_Scene.Mat[i].EmissionColor));
-			ImGui::DragFloat("EmissionPower", &(m_Scene.Mat[i].EmissionPower), 0.05f, 0.0f, FLT_MAX);
+			ImGui::ColorEdit3("Emission Color", glm::value_ptr(m_Scene.Mat[i].EmissionColor));
+			ImGui::DragFloat("Emission Power", &(m_Scene.Mat[i].EmissionPower), 0.05f, 0.0f, FLT_MAX);
 
 			ImGui::Separator();
 

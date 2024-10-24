@@ -1,6 +1,6 @@
 -- WalnutExternal.lua
 
-VULKAN_SDK = "D:/C++ visual studio/Vulkan"--os.getenv("VULKAN_SDK")
+VULKAN_SDK = "D:/Programmin Prog/Vulkan"--os.getenv("VULKAN_SDK")
 
 IncludeDir = {}
 IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
