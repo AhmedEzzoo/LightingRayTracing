@@ -121,7 +121,7 @@ public:
 
 		}
 
-		ImGui::Checkbox("Accumulate", &(m_Renderer.GetSettings().Accumulate));
+		ImGui::Checkbox("Accumulate", &m_Renderer.GetSettings().Accumulate);
 
 		if (ImGui::Button("ResetFrameIndex"))
 		{
